@@ -1,22 +1,25 @@
 # Dutch Postcode Lookup
-[![Build Status](https://travis-ci.org/hpolthof/postcode-tech.svg?branch=master)](https://travis-ci.org/hpolthof/postcode-tech)
+![PHPUnit Tests](https://github.com/kkevindev/postcode-tech/actions/workflows/quality_assurance.yaml/badge.svg)
+![Latest Stable Version](https://img.shields.io/badge/PHP%20version-8.1%20~%208.4-34D058)
 
-This is a wrapper around the API of [Postcode.Tech](https://postcode.tech). You need an API key for this
-API to work. You can register for free and create an API Key.
+This is a wrapper around the [postcode.tech Postcode API](https://postcode.tech).
 
 ## Installation
 To install use composer
 ```bash
-composer require hpolthof/postcode-tech
+composer require kkevindev/postcode-tech
 ```
+
+## Requirements
+You need an API key for this API to work. You can register for free and create an API Key.
 
 ## Usage
 Please see the example below for usage:
 ```php
-use Hpolthof\PostcodeTech\Exceptions\HttpException;
-use Hpolthof\PostcodeTech\Exceptions\PostcodeNotFoundException;
-use Hpolthof\PostcodeTech\Exceptions\ValidationException;
-use Hpolthof\PostcodeTech\Postcode;
+use Kkevindev\PostcodeTech\Exceptions\HttpException;
+use Kkevindev\PostcodeTech\Exceptions\PostcodeNotFoundException;
+use Kkevindev\PostcodeTech\Exceptions\ValidationException;
+use Kkevindev\PostcodeTech\Postcode;
 
 $apiKey = '';
 
@@ -38,7 +41,3 @@ try {
 ## Disclaimer
 This package can be used free of charge. Obviously this software comes as is, and there 
 are no warranties or whatsoever.
-
-If you like the package it is always appreciated if you drop a message of gratitude! ;-)
-
-The package was build by: [Paul Olthof](mailto:hi@olthof.tech)

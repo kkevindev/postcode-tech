@@ -1,12 +1,18 @@
 <?php
 
-namespace Kkevindev\PostcodeTech\Tests;
 
-use Kkevindev\PostcodeTech\Postcode;
+use Kkevindev\PostcodeTech\Client;
 use PHPUnit\Framework\TestCase;
 
-final class PostcodeTest extends TestCase
+final class ClientTest extends TestCase
 {
+    private Client $client;
+
+    protected function setUp(): void
+    {
+        $this->client = new Client('demo');
+    }
+
     public static function providePostcodeData(): iterable
     {
         yield ['1012 RJ', 147, 'Nieuwezijds Voorburgwal', 'Amsterdam'];
@@ -21,11 +27,9 @@ final class PostcodeTest extends TestCase
      */
     public function testSearch(string $postcode, int $number, string $expectedStreet, string $expectedCity): void
     {
-        $postcodeResult = Postcode::search($postcode, $number, 'demo');
+        $result = $this->client->get($postcode, $number);
 
-        self::assertEquals($postcode, $postcodeResult->postcode());
-        self::assertEquals($number, $postcodeResult->number());
-        self::assertEquals($expectedStreet, $postcodeResult->street());
-        self::assertEquals($expectedCity, $postcodeResult->city());
+        self::assertEquals($expectedStreet, $result['street']);
+        self::assertEquals($expectedCity, $result['city']);
     }
 }

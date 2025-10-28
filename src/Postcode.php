@@ -1,27 +1,38 @@
 <?php
 
-namespace Hpolthof\PostcodeTech;
+namespace Kkevindev\PostcodeTech;
 
-class Postcode
+use Kkevindev\PostcodeTech\Exceptions\HttpException;
+use Kkevindev\PostcodeTech\Exceptions\PostcodeNotFoundException;
+use Kkevindev\PostcodeTech\Exceptions\ValidationException;
+
+class Postcode implements PostcodeInterface
 {
-    protected $postcode;
-    protected $number;
-    protected $street;
-    protected $city;
+    protected function __construct(
+        protected string $postcode,
+        protected int $number,
+        protected string $street,
+        protected string $city,
+    ) {
+    }
 
-    public static function search($postcode, $number, $token): self
+    /**
+     * @throws HttpException
+     * @throws ValidationException
+     * @throws PostcodeNotFoundException
+     */
+    public static function search(string $postcode, int $number, string $token): self
     {
-        $request = new PostcodeRequest();
-        $request->setToken($token);
-        $response = $request->find($postcode, $number);
+        $client = new Client($token);
 
-        $result = new self();
-        $result->postcode = $postcode;
-        $result->number = $number;
-        $result->street = $response->getStreet();
-        $result->city = $response->getCity();
+        $response = $client->get($postcode, $number);
 
-        return $result;
+        return new self(
+            $postcode,
+            $number,
+            $response['street'],
+            $response['city'],
+        );
     }
 
     public function postcode(): string

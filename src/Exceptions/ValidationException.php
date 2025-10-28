@@ -1,10 +1,7 @@
 <?php
 
+namespace Kkevindev\PostcodeTech\Exceptions;
 
-namespace Hpolthof\PostcodeTech\Exceptions;
-
-
-class ValidationException extends HttpException
+final class ValidationException extends HttpException
 {
-
 }

@@ -1,10 +1,7 @@
 <?php
 
+namespace Kkevindev\PostcodeTech\Exceptions;
 
-namespace Hpolthof\PostcodeTech\Exceptions;
-
-
-class PostcodeNotFoundException extends HttpException
+final class PostcodeNotFoundException extends HttpException
 {
-
 }
