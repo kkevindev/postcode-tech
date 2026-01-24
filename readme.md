@@ -1,6 +1,6 @@
 # Dutch Postcode Lookup
 ![PHPUnit Tests](https://github.com/kkevindev/postcode-tech/actions/workflows/quality_assurance.yaml/badge.svg)
-![Latest Stable Version](https://img.shields.io/badge/PHP%20version-8.1%20~%208.4-34D058)
+![Latest Stable Version](https://img.shields.io/badge/PHP%20version-8.1%20~%208.5-34D058)
 
 This is a wrapper around the [postcode.tech Postcode API](https://postcode.tech).
 
