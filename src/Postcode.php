@@ -5,6 +5,7 @@ namespace Kkevindev\PostcodeTech;
 use Kkevindev\PostcodeTech\Exceptions\HttpException;
 use Kkevindev\PostcodeTech\Exceptions\PostcodeNotFoundException;
 use Kkevindev\PostcodeTech\Exceptions\ValidationException;
+use Symfony\Component\HttpClient\HttpClient;
 
 class Postcode implements PostcodeInterface
 {
@@ -23,7 +24,7 @@ class Postcode implements PostcodeInterface
      */
     public static function search(string $postcode, int $number, string $token): self
     {
-        $client = new Client($token);
+        $client = new Client($token, HttpClient::create());
 
         $response = $client->get($postcode, $number);
 

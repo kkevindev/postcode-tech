@@ -5,75 +5,74 @@ namespace Kkevindev\PostcodeTech;
 use Kkevindev\PostcodeTech\Exceptions\HttpException;
 use Kkevindev\PostcodeTech\Exceptions\PostcodeNotFoundException;
 use Kkevindev\PostcodeTech\Exceptions\ValidationException;
-use Kkevindev\PostcodeTech\Http\Request\Headers;
-use Kkevindev\PostcodeTech\Http\Response\Response;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * @internal
+ */
 final class Client
 {
-    /** @var string */
-    private const BASE_URI = 'https://postcode.tech';
-
-    private Headers $headers;
-
     public function __construct(
         private readonly string $token,
+        private readonly HttpClientInterface $httpClient,
     ) {
-        $this->headers = new Headers([
-            'Authorization' => sprintf('Bearer %s', $this->token),
-        ]);
     }
 
     /**
-     * @throws PostcodeNotFoundException
-     * @throws ValidationException
-     * @throws HttpException
-     *
      * @return array{
      *     street: string,
      *     city: string,
      * }
+     *
+     * @throws PostcodeNotFoundException
+     * @throws ValidationException
+     * @throws HttpException
      */
     public function get(string $postcode, int $number): array
     {
-        $queryParameters = [
-            'postcode' => $postcode,
-            'number' => $number,
-        ];
-
-        $uri = sprintf(
-            '%s/%s?%s',
-            self::BASE_URI,
-            'api/v1/postcode',
-            http_build_query($queryParameters),
-        );
-
-        $response = file_get_contents(
-            $uri,
-            false,
-            stream_context_create([
-                'http' => [
-                    'method' => 'GET',
-                    'header' => $this->headers->getHeaders(),
-                    'ignore_errors' => true,
+        try {
+            $response = $this->httpClient->request(
+                'GET',
+                'https://postcode.tech/api/v1/postcode',
+                [
+                    'auth_bearer' => $this->token,
+                    'query' => [
+                        'postcode' => $postcode,
+                        'number' => $number,
+                    ],
                 ],
-            ]),
-        );
+            );
 
-        if (!$response) {
-            throw new HttpException('No response received from the API.');
+            $statusCode = $response->getStatusCode();
+
+            $responseBody = $response->getContent(false);
+        } catch (TransportExceptionInterface|ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface $exception) {
+            throw new HttpException($exception->getMessage(), previous: $exception);
         }
 
-        // @todo refactor the magic '$http_response_header' to 'http_get_last_response_headers()' when PHP 8.4 is the lowest supported version.
-        $response = new Response($response, $http_response_header);
-
-        if (!$response->isSuccess()) {
-            match ($response->getHeaders()->getStatusCode()) {
-                404 => throw new PostcodeNotFoundException('No results found for the given postcode and number.', $response->getResponseBody()),
-                422 => throw new ValidationException('The request data was invalid.', $response->getResponseBody()),
-                default => throw new HttpException('An unknown error occurred while fetching the data from the API.', $response->getResponseBody()),
+        if (200 > $statusCode || 300 <= $statusCode) {
+            throw match ($statusCode) {
+                401 => new HttpException('Unauthorized', $responseBody),
+                404 => new PostcodeNotFoundException('No results found for the given postcode and number.', $responseBody),
+                422 => new ValidationException('The request data was invalid.', $responseBody),
+                default => new HttpException('An unknown error occurred while fetching the data from the API.', $responseBody),
             };
         }
 
-        return $response->getResponseBodyAsArray();
+        try {
+            $array = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new HttpException('The response body is not a valid JSON array.', $responseBody, $exception);
+        }
+
+        if (!is_array($array) || empty($array['street']) || !is_string($array['street']) || empty($array['city']) || !is_string($array['city'])) {
+            throw new HttpException('The response body did not contain the expected data.', $responseBody);
+        }
+
+        return $array;
     }
 }

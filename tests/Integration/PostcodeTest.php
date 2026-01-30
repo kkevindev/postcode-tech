@@ -1,12 +1,20 @@
 <?php
 
-namespace Kkevindev\PostcodeTech\Tests;
+namespace Kkevindev\PostcodeTech\Tests\Integration;
 
 use Kkevindev\PostcodeTech\Postcode;
 use PHPUnit\Framework\TestCase;
 
 final class PostcodeTest extends TestCase
 {
+    /**
+     * @return iterable<array{
+     *     0: string,
+     *     1: int,
+     *     2: string,
+     *     3: string,
+     * }>
+     */
     public static function providePostcodeData(): iterable
     {
         yield ['1012 RJ', 147, 'Nieuwezijds Voorburgwal', 'Amsterdam'];
