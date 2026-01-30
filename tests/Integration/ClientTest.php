@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Kkevindev\PostcodeTech\Tests\Integration;
+namespace Hpolthof\PostcodeTech\Tests\Integration;
 
-use Kkevindev\PostcodeTech\Client;
-use Kkevindev\PostcodeTech\Tests\AbstractClientTestCase;
+use Hpolthof\PostcodeTech\Client;
+use Hpolthof\PostcodeTech\Tests\AbstractClientTestCase;
 use Symfony\Component\HttpClient\HttpClient;
 
 /**
