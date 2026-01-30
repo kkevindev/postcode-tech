@@ -5,7 +5,7 @@
     "type": "library",
     "require": {
         "php": "^8.1",
-        "kkevindev/assert-return-value":"1.11.0",
+        "kkevindev/assert-return-value":"^1.11.0",
         "symfony/http-client": "^6.4 || ^7.0 || ^8.0"
     },
     "require-dev": {
@@ -26,6 +26,7 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "cs-fix": "vendor/bin/php-cs-fixer fix",
-        "phpstan": "vendor/bin/phpstan analyse"
+        "phpstan": "vendor/bin/phpstan analyse",
+        "composer-validate": "composer validate --strict"
     }
 }
