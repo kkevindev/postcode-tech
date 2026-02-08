@@ -2,26 +2,38 @@
 
 namespace Hpolthof\PostcodeTech;
 
-class Postcode
+use Hpolthof\PostcodeTech\Exceptions\HttpException;
+use Hpolthof\PostcodeTech\Exceptions\PostcodeNotFoundException;
+use Hpolthof\PostcodeTech\Exceptions\ValidationException;
+use Symfony\Component\HttpClient\HttpClient;
+
+class Postcode implements PostcodeInterface
 {
-    protected $postcode;
-    protected $number;
-    protected $street;
-    protected $city;
+    protected function __construct(
+        protected string $postcode,
+        protected int $number,
+        protected string $street,
+        protected string $city,
+    ) {
+    }
 
-    public static function search($postcode, $number, $token): self
+    /**
+     * @throws HttpException
+     * @throws ValidationException
+     * @throws PostcodeNotFoundException
+     */
+    public static function search(string $postcode, int $number, string $token): self
     {
-        $request = new PostcodeRequest();
-        $request->setToken($token);
-        $response = $request->find($postcode, $number);
+        $client = new Client($token, HttpClient::create());
 
-        $result = new self();
-        $result->postcode = $postcode;
-        $result->number = $number;
-        $result->street = $response->getStreet();
-        $result->city = $response->getCity();
+        $response = $client->get($postcode, $number);
 
-        return $result;
+        return new self(
+            $postcode,
+            $number,
+            $response['street'],
+            $response['city'],
+        );
     }
 
     public function postcode(): string
