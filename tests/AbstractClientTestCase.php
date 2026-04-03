@@ -1,11 +1,11 @@
 <?php
 
-namespace Kkevindev\PostcodeTech\Tests;
+namespace Hpolthof\PostcodeTech\Tests;
 
-use Kkevindev\PostcodeTech\Client;
-use Kkevindev\PostcodeTech\Exceptions\HttpException;
-use Kkevindev\PostcodeTech\Exceptions\PostcodeNotFoundException;
-use Kkevindev\PostcodeTech\Exceptions\ValidationException;
+use Hpolthof\PostcodeTech\Client;
+use Hpolthof\PostcodeTech\Exceptions\HttpException;
+use Hpolthof\PostcodeTech\Exceptions\PostcodeNotFoundException;
+use Hpolthof\PostcodeTech\Exceptions\ValidationException;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractClientTestCase extends TestCase
