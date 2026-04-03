@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kkevindev\PostcodeTech\Tests\Mock;
 
-use Kkevindev\AssertReturnValue\Assert;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Webmozart\Assert\Assert;
 
 final class MockResponseHttpClient extends MockHttpClient
 {
